@@ -11,7 +11,7 @@ import SwiftUI
 struct image_loaderApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ImageListView()
         }
     }
 }
