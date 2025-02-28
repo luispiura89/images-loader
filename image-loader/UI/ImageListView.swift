@@ -8,17 +8,26 @@
 import SwiftUI
 
 struct ImageListView: View {
+    
+    @StateObject var viewModel: ImageListViewModel
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        GeometryReader { geometry in
+            ScrollView {
+                LazyVStack(spacing: 20) {
+                    switch viewModel.state {
+                    case .loading:
+                        ForEach(0..<3, id: \.self) { index in
+                            GradientLoadingView(width: geometry.size.width, height: 250)
+                        }
+                    default:
+                        EmptyView()
+                    }
+                }
+            }
+            .task {
+                await viewModel.fetchImages()
+            }
         }
-        .padding()
     }
-}
-
-#Preview {
-    ImageListView()
 }

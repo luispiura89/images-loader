@@ -11,7 +11,16 @@ import SwiftUI
 struct image_loaderApp: App {
     var body: some Scene {
         WindowGroup {
-            ImageListView()
+            makeImageListView()
         }
+    }
+    
+    private func makeImageListView() -> some View {
+        let viewModel = ImageListViewModel()
+        viewModel.onImagesLoaded = {
+            viewModel.state = .loaded([])
+        }
+        
+        return ImageListView(viewModel: viewModel)
     }
 }
