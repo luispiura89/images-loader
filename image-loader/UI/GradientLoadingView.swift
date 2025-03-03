@@ -31,6 +31,7 @@ struct GradientLoadingView: View {
         .frame(width: width - 20, height: height)
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .onAppear {
+            animateGradient = false
             withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
                 animateGradient.toggle()
             }
