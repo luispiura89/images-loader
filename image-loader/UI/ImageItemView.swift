@@ -60,7 +60,7 @@ struct ImageItemView: View {
             VStack(spacing: 20) {
                 ImageItemView(
                     width: geometry.size.width,
-                    height: 300,
+                    height: 230,
                     viewModel: .init(
                         imageURL: URL(string: "https://any-url.com/image.jpg")!,
                         authorName: "This is the first author",

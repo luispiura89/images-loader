@@ -9,6 +9,14 @@ import SwiftUI
 
 @main
 struct image_loaderApp: App {
+    
+    var baseURL: URL {
+        guard let url = URL(string: "https://picsum.photos/v2/list") else {
+            fatalError("Invalid URL")
+        }
+        return url
+    }
+    
     var body: some Scene {
         WindowGroup {
             makeImageListView()
@@ -16,9 +24,11 @@ struct image_loaderApp: App {
     }
     
     private func makeImageListView() -> some View {
-        let viewModel = ImageListViewModel()
-        viewModel.onImagesLoaded = {
-            viewModel.state = .loaded([])
+        let httpClient = URLSessionHTTPClient(session: .shared)
+        let imageLoader = RemoteImageLoader(httpClient: httpClient, url: baseURL)
+        let viewModel = ImageListViewModel(imageLoader: imageLoader)
+        viewModel.onImagesLoaded = { images in
+            viewModel.state = .loaded(images.map { .init(imageURL: $0.url, authorName: $0.author) })
         }
         
         return ImageListView(viewModel: viewModel)

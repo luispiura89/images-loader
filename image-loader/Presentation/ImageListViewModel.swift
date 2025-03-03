@@ -19,12 +19,15 @@ final class ImageListViewModel: ObservableObject {
     
     @Published var state = State.idle
     
+    private let imageLoader: ImageLoader
+    
     /// Closure used to abstract the loading success in order to keep the view model agnostic
     /// of the loaded state
-    var onImagesLoaded: (() -> Void)?
+    var onImagesLoaded: (([ImageModel]) -> Void)?
     
-    init(state: State = .idle) {
+    init(state: State = .idle, imageLoader: ImageLoader) {
         self.state = state
+        self.imageLoader = imageLoader
     }
     
     @MainActor
@@ -33,8 +36,8 @@ final class ImageListViewModel: ObservableObject {
         state = .loading
         
         do {
-            try await Task.sleep(nanoseconds: 2_000_000_000)
-            onImagesLoaded?()
+            let images = try await imageLoader.getImages()
+            onImagesLoaded?(images)
         } catch {}
     }
 }

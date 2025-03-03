@@ -20,6 +20,10 @@ struct ImageListView: View {
                         ForEach(0..<3, id: \.self) { index in
                             GradientLoadingView(width: geometry.size.width, height: 250)
                         }
+                    case .loaded(let itemsViewModels):
+                        ForEach(0..<itemsViewModels.count, id: \.self) { index in
+                            ImageItemView(width: geometry.size.width, height: 400, viewModel: itemsViewModels[index])
+                        }
                     default:
                         EmptyView()
                     }
