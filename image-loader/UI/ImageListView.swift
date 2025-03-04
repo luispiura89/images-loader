@@ -12,25 +12,31 @@ struct ImageListView: View {
     @StateObject var viewModel: ImageListViewModel
     
     var body: some View {
-            ScrollView {
-                LazyVStack(spacing: 20) {
-                    switch viewModel.state {
-                    case .loading:
-                        ForEach(0..<3, id: \.self) { index in
-                            GradientLoadingView()
-                                .frame(height: 250)
-                        }
-                    case .loaded(let itemsViewModels):
+        ZStack {
+            switch viewModel.state {
+            case .loading:
+                VStack(spacing: 20) {
+                    ForEach(0..<3, id: \.self) { index in
+                        GradientLoadingView()
+                            .frame(height: 250)
+                            .padding(.horizontal, 10)
+                    }
+                }
+            case .loaded(let itemsViewModels):
+                ScrollView {
+                    LazyVStack(spacing: 20) {
                         ForEach(0..<itemsViewModels.count, id: \.self) { index in
                             ImageItemView(viewModel: itemsViewModels[index])
                         }
-                    default:
-                        EmptyView()
                     }
                 }
+                .scrollIndicators(.hidden)
+            default:
+                EmptyView()
             }
-            .task {
-                await viewModel.fetchImages()
-            }
+        }
+        .task {
+            await viewModel.fetchImages()
+        }
     }
 }
