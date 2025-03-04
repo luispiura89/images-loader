@@ -25,8 +25,6 @@ struct ImageItemView: View {
                 switch viewModel.state {
                 case .loading:
                     GradientLoadingView()
-                        .frame(height: viewModel.cellHeight)
-                        .padding(.horizontal, Constants.horizontalPad)
                 case let .loaded(image, author):
                     ZStack(alignment: .bottomTrailing) {
                         Image(uiImage: image)
@@ -48,19 +46,23 @@ struct ImageItemView: View {
                             .padding(Constants.authorPad)
                     }
                     .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
-                    .padding(.horizontal, Constants.horizontalPad)
                 default:
                     EmptyView()
-                        .frame(height: viewModel.cellHeight)
-                        .padding(.horizontal, Constants.horizontalPad)
                 }
             }
+            .onAppear {
+                viewModel.measureCellHeight(withMacWidth: maxCellWidth(in: geometry))
+            }
+            .padding(.horizontal, Constants.horizontalPad)
             .task {
-                viewModel.measureCellHeight(withMacWidth: geometry.size.width - Constants.horizontalPad)
-                await viewModel.fetchImage(maxWidth: geometry.size.width - Constants.horizontalPad)
+                await viewModel.fetchImage(maxWidth: maxCellWidth(in: geometry))
             }
         }
         .frame(height: viewModel.cellHeight)
+    }
+    
+    private func maxCellWidth(in geometry: GeometryProxy) -> CGFloat {
+        geometry.size.width - Constants.horizontalPad * 2
     }
 }
 
