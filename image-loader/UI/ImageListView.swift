@@ -22,7 +22,7 @@ struct ImageListView: View {
                         }
                     case .loaded(let itemsViewModels):
                         ForEach(0..<itemsViewModels.count, id: \.self) { index in
-                            ImageItemView(width: geometry.size.width, height: 400, viewModel: itemsViewModels[index])
+                            ImageItemView(width: geometry.size.width, viewModel: itemsViewModels[index])
                         }
                     default:
                         EmptyView()

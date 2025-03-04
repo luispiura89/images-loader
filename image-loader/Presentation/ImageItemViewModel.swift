@@ -17,14 +17,28 @@ final class ImageItemViewModel: ObservableObject {
     }
     
     @Published var state: State = .loading
+    @Published var cellHeight: CGFloat = 0
     
     private let imageURL: URL
     private let authorName: String
+    private let imageWidth: CGFloat
+    private let imageHeight: CGFloat
     
-    init(imageURL: URL, authorName: String, state: State = .loading) {
+    init(
+        imageURL: URL,
+        authorName: String,
+        imageWidth: CGFloat = 0,
+        imageHeight: CGFloat = 0,
+        state: State = .loading
+    ) {
         self.imageURL = imageURL
         self.authorName = authorName
         self.state = state
+        self.imageWidth = imageWidth
+        self.imageHeight = imageHeight
     }
     
+    func measureCellHeight(withMacWidth maxWidth: CGFloat) {
+        cellHeight = (imageHeight / imageWidth) * (maxWidth - 20)
+    }
 }

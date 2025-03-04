@@ -28,7 +28,11 @@ struct image_loaderApp: App {
         let imageLoader = RemoteImageLoader(httpClient: httpClient, url: baseURL)
         let viewModel = ImageListViewModel(imageLoader: imageLoader)
         viewModel.onImagesLoaded = { images in
-            viewModel.state = .loaded(images.map { .init(imageURL: $0.url, authorName: $0.author) })
+            viewModel.state = .loaded(
+                images.map {
+                    .init(imageURL: $0.url, authorName: $0.author, imageWidth: .init($0.width), imageHeight: .init($0.height))
+                }
+            )
         }
         
         return ImageListView(viewModel: viewModel)

@@ -10,9 +10,14 @@ import SwiftUI
 struct ImageItemView: View {
     
     let width: CGFloat
-    let height: CGFloat
-    
     @StateObject var viewModel: ImageItemViewModel
+    
+//    init(width: CGFloat, viewModel: ImageItemViewModel) {
+//        self.width = width
+//        self.viewModel = viewModel
+//        
+//        self.viewModel.measureCellHeight(withMacWidth: width)
+//    }
     
     private enum Constants {
         static let cornerRadius: CGFloat = 20
@@ -23,33 +28,38 @@ struct ImageItemView: View {
     }
     
     var body: some View {
-        switch viewModel.state {
-        case .loading:
-            GradientLoadingView(width: width, height: height)
-        case let .loaded(image, author):
-            ZStack(alignment: .bottomTrailing) {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: width - Constants.horizontalPad, height: height)
-                    .background(
-                        LinearGradient(
-                            gradient: Gradient(
-                                colors: [.clear, .black.opacity(Constants.gradientOpacity)]
-                            ),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+        ZStack {
+            switch viewModel.state {
+            case .loading:
+                GradientLoadingView(width: width, height: viewModel.cellHeight)
+            case let .loaded(image, author):
+                ZStack(alignment: .bottomTrailing) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .background(
+                            LinearGradient(
+                                gradient: Gradient(
+                                    colors: [.clear, .black.opacity(Constants.gradientOpacity)]
+                                ),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
                         )
-                    )
-                
-                Text(author)
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding(Constants.authorPad)
+                    
+                    Text(author)
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding(Constants.authorPad)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
+            default:
+                EmptyView()
             }
-            .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
-        default:
-            EmptyView()
+        }
+        .frame(width: width - Constants.horizontalPad, height: viewModel.cellHeight)
+        .onAppear {
+            viewModel.measureCellHeight(withMacWidth: width - Constants.horizontalPad)
         }
     }
 }
@@ -60,7 +70,6 @@ struct ImageItemView: View {
             VStack(spacing: 20) {
                 ImageItemView(
                     width: geometry.size.width,
-                    height: 230,
                     viewModel: .init(
                         imageURL: URL(string: "https://any-url.com/image.jpg")!,
                         authorName: "This is the first author",
@@ -70,7 +79,6 @@ struct ImageItemView: View {
                 
                 ImageItemView(
                     width: geometry.size.width,
-                    height: 230,
                     viewModel: .init(
                         imageURL: URL(string: "https://any-url.com/image.jpg")!,
                         authorName: "This is the first author",
