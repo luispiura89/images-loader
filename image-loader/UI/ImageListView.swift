@@ -12,17 +12,17 @@ struct ImageListView: View {
     @StateObject var viewModel: ImageListViewModel
     
     var body: some View {
-        GeometryReader { geometry in
             ScrollView {
                 LazyVStack(spacing: 20) {
                     switch viewModel.state {
                     case .loading:
                         ForEach(0..<3, id: \.self) { index in
-                            GradientLoadingView(width: geometry.size.width - 20, height: 250)
+                            GradientLoadingView()
+                                .frame(height: 250)
                         }
                     case .loaded(let itemsViewModels):
                         ForEach(0..<itemsViewModels.count, id: \.self) { index in
-                            ImageItemView(width: geometry.size.width, viewModel: itemsViewModels[index])
+                            ImageItemView(viewModel: itemsViewModels[index])
                         }
                     default:
                         EmptyView()
@@ -32,6 +32,5 @@ struct ImageListView: View {
             .task {
                 await viewModel.fetchImages()
             }
-        }
     }
 }

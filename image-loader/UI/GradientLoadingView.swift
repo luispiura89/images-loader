@@ -8,9 +8,6 @@
 import SwiftUI
 
 struct GradientLoadingView: View {
-
-    let width: CGFloat
-    let height: CGFloat
     
     @State private var animateGradient = false
     
@@ -23,17 +20,18 @@ struct GradientLoadingView: View {
     }
     
     var body: some View {
-        LinearGradient(
-            gradient: Gradient(colors: animateGradient ? gradientColors : reversedGradientColors),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .frame(width: width, height: height)
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-        .onAppear {
-            animateGradient = false
-            withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
-                animateGradient.toggle()
+        GeometryReader { geometry in
+            LinearGradient(
+                gradient: Gradient(colors: animateGradient ? gradientColors : reversedGradientColors),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .onAppear {
+                animateGradient = false
+                withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
+                    animateGradient.toggle()
+                }
             }
         }
     }
@@ -42,8 +40,8 @@ struct GradientLoadingView: View {
 #Preview {
     GeometryReader { geometry in
         VStack {
-            GradientLoadingView(width: geometry.size.width, height: 200)
-            GradientLoadingView(width: geometry.size.width, height: 200)
+            GradientLoadingView()
+            GradientLoadingView()
         }
         .frame(maxWidth: .infinity)
     }

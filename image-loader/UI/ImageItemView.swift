@@ -8,57 +8,59 @@
 import SwiftUI
 
 struct ImageItemView: View {
-    
-    let width: CGFloat
+
     @StateObject var viewModel: ImageItemViewModel
-    
-    var maxWidth: CGFloat {
-        width - Constants.horizontalPad
-    }
     
     private enum Constants {
         static let cornerRadius: CGFloat = 20
         static let authorPad: CGFloat = 10
-        static let horizontalPad: CGFloat = 20
+        static let horizontalPad: CGFloat = 10
         
         static let gradientOpacity: Double = 0.2
     }
     
     var body: some View {
-        ZStack {
-            switch viewModel.state {
-            case .loading:
-                GradientLoadingView(width: maxWidth, height: viewModel.cellHeight)
-            case let .loaded(image, author):
-                ZStack(alignment: .bottomTrailing) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .background(
-                            LinearGradient(
-                                gradient: Gradient(
-                                    colors: [.clear, .black.opacity(Constants.gradientOpacity)]
-                                ),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
+        GeometryReader { geometry in
+            ZStack {
+                switch viewModel.state {
+                case .loading:
+                    GradientLoadingView()
+                        .frame(height: viewModel.cellHeight)
+                        .padding(.horizontal, Constants.horizontalPad)
+                case let .loaded(image, author):
+                    ZStack(alignment: .bottomTrailing) {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(
+                                        colors: [.clear, .black.opacity(Constants.gradientOpacity)]
+                                    ),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
                             )
-                        )
-                    
-                    Text(author)
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding(Constants.authorPad)
+                        
+                        Text(author)
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding(Constants.authorPad)
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
+                    .padding(.horizontal, Constants.horizontalPad)
+                default:
+                    EmptyView()
+                        .frame(height: viewModel.cellHeight)
+                        .padding(.horizontal, Constants.horizontalPad)
                 }
-                .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
-            default:
-                EmptyView()
+            }
+            .task {
+                viewModel.measureCellHeight(withMacWidth: geometry.size.width - Constants.horizontalPad)
+                await viewModel.fetchImage(maxWidth: geometry.size.width - Constants.horizontalPad)
             }
         }
-        .task {
-            viewModel.measureCellHeight(withMacWidth: maxWidth)
-            await viewModel.fetchImage(maxWidth: maxWidth)
-        }
-        .frame(width: maxWidth, height: viewModel.cellHeight)
+        .frame(height: viewModel.cellHeight)
     }
 }
 
@@ -67,7 +69,6 @@ struct ImageItemView: View {
         ScrollView {
             VStack(spacing: 20) {
                 ImageItemView(
-                    width: geometry.size.width,
                     viewModel: .init(
                         imageURL: URL(string: "https://any-url.com/image.jpg")!,
                         authorName: "This is the first author",
@@ -77,7 +78,6 @@ struct ImageItemView: View {
                 )
                 
                 ImageItemView(
-                    width: geometry.size.width,
                     viewModel: .init(
                         imageURL: URL(string: "https://any-url.com/image.jpg")!,
                         authorName: "This is the first author",
