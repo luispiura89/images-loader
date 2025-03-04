@@ -28,7 +28,7 @@ struct GradientLoadingView: View {
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
-        .frame(width: width - 20, height: height)
+        .frame(width: width, height: height)
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .onAppear {
             animateGradient = false
