@@ -12,12 +12,9 @@ struct ImageItemView: View {
     let width: CGFloat
     @StateObject var viewModel: ImageItemViewModel
     
-//    init(width: CGFloat, viewModel: ImageItemViewModel) {
-//        self.width = width
-//        self.viewModel = viewModel
-//        
-//        self.viewModel.measureCellHeight(withMacWidth: width)
-//    }
+    var maxWidth: CGFloat {
+        width - Constants.horizontalPad
+    }
     
     private enum Constants {
         static let cornerRadius: CGFloat = 20
@@ -31,7 +28,7 @@ struct ImageItemView: View {
         ZStack {
             switch viewModel.state {
             case .loading:
-                GradientLoadingView(width: width, height: viewModel.cellHeight)
+                GradientLoadingView(width: maxWidth, height: viewModel.cellHeight)
             case let .loaded(image, author):
                 ZStack(alignment: .bottomTrailing) {
                     Image(uiImage: image)
@@ -57,10 +54,11 @@ struct ImageItemView: View {
                 EmptyView()
             }
         }
-        .frame(width: width - Constants.horizontalPad, height: viewModel.cellHeight)
-        .onAppear {
-            viewModel.measureCellHeight(withMacWidth: width - Constants.horizontalPad)
+        .task {
+            viewModel.measureCellHeight(withMacWidth: maxWidth)
+            await viewModel.fetchImage(maxWidth: maxWidth)
         }
+        .frame(width: maxWidth, height: viewModel.cellHeight)
     }
 }
 
@@ -73,6 +71,7 @@ struct ImageItemView: View {
                     viewModel: .init(
                         imageURL: URL(string: "https://any-url.com/image.jpg")!,
                         authorName: "This is the first author",
+                        imageDataLoader: RemoteImageDataLoader(httpClient: URLSessionHTTPClient(session: .shared)),
                         state: .loading
                     )
                 )
@@ -82,6 +81,7 @@ struct ImageItemView: View {
                     viewModel: .init(
                         imageURL: URL(string: "https://any-url.com/image.jpg")!,
                         authorName: "This is the first author",
+                        imageDataLoader: RemoteImageDataLoader(httpClient: URLSessionHTTPClient(session: .shared)),
                         state: .loaded(image: UIImage(systemName: "square.and.arrow.down")!, author: "This is the author")
                     )
                 )

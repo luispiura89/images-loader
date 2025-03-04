@@ -18,7 +18,7 @@ struct ImageListView: View {
                     switch viewModel.state {
                     case .loading:
                         ForEach(0..<3, id: \.self) { index in
-                            GradientLoadingView(width: geometry.size.width, height: 250)
+                            GradientLoadingView(width: geometry.size.width - 20, height: 250)
                         }
                     case .loaded(let itemsViewModels):
                         ForEach(0..<itemsViewModels.count, id: \.self) { index in
