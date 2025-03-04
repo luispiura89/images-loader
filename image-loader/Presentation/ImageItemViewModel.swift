@@ -44,18 +44,18 @@ final class ImageItemViewModel: ObservableObject {
 
     @MainActor
     func fetchImage(maxWidth: CGFloat) async {
-//        guard case .idle = state else { return }
+        if case .loaded = state {
+            return
+        }
         state = .loading
-//        Task { @MainActor in
-            do {
-                let imageData = try await imageDataLoader.getImageData(
-                    fromURL: imageURL.replaceWidthAndHeightPathComponents(with: maxWidth, height: cellHeight)
-                )
-                if let uiImage = UIImage(data: imageData) {
-                    state = .loaded(image: uiImage, author: authorName)
-                }
-            } catch {}
-//        }
+        do {
+            let imageData = try await imageDataLoader.getImageData(
+                fromURL: imageURL.replaceWidthAndHeightPathComponents(with: maxWidth, height: cellHeight)
+            )
+            if let uiImage = UIImage(data: imageData) {
+                state = .loaded(image: uiImage, author: authorName)
+            }
+        } catch {}
     }
     
     func measureCellHeight(withMacWidth maxWidth: CGFloat) {
