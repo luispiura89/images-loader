@@ -18,7 +18,9 @@ final class ImageItemViewModel: ObservableObject {
     }
     
     @Published var state: State = .idle
-    @Published var cellHeight: CGFloat = 0
+    @Published var cellHeight: CGFloat = 200
+    
+    private var didMeasureSize = false
     
     private let imageURL: URL
     private let authorName: String
@@ -59,8 +61,9 @@ final class ImageItemViewModel: ObservableObject {
     }
     
     func measureCellHeight(withMacWidth maxWidth: CGFloat) {
-        guard cellHeight == 0 else { return }
+        guard !didMeasureSize else { return }
         cellHeight = (imageHeight / imageWidth) * maxWidth
+        didMeasureSize = true
     }
 }
 
