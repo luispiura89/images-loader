@@ -72,8 +72,7 @@ struct ImageItemView: View {
             VStack(spacing: 20) {
                 ImageItemView(
                     viewModel: .init(
-                        imageURL: URL(string: "https://any-url.com/image.jpg")!,
-                        authorName: "This is the first author",
+                        model: .init(id: "1", author: "First author", width: 1000, height: 200, url: URL(string: "https://any-url.com/image.jpg")!),
                         imageDataLoader: RemoteImageDataLoader(httpClient: URLSessionHTTPClient(session: .shared)),
                         state: .loading
                     )
@@ -81,8 +80,7 @@ struct ImageItemView: View {
                 
                 ImageItemView(
                     viewModel: .init(
-                        imageURL: URL(string: "https://any-url.com/image.jpg")!,
-                        authorName: "This is the first author",
+                        model: .init(id: "2", author: "Second author", width: 3000, height: 5000, url: URL(string: "https://any-url.com/image.jpg")!),
                         imageDataLoader: RemoteImageDataLoader(httpClient: URLSessionHTTPClient(session: .shared)),
                         state: .loaded(image: UIImage(systemName: "square.and.arrow.down")!, author: "This is the author")
                     )

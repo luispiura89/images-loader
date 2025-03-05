@@ -31,11 +31,8 @@ struct image_loaderApp: App {
             viewModel.state = .loaded(
                 images.map {
                     .init(
-                        imageURL: $0.url,
-                        authorName: $0.author,
-                        imageDataLoader: RemoteImageDataLoader(httpClient: httpClient),
-                        imageWidth: .init($0.width),
-                        imageHeight: .init($0.height)
+                        model: $0,
+                        imageDataLoader: RemoteImageDataLoader(httpClient: httpClient)
                     )
                 }
             )

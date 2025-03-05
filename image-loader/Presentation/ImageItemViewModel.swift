@@ -22,25 +22,16 @@ final class ImageItemViewModel: ObservableObject {
     
     private var didMeasureSize = false
     
-    private let imageURL: URL
-    private let authorName: String
+    private let model: ImageModel
     private let imageDataLoader: ImageDataLoader
-    private let imageWidth: CGFloat
-    private let imageHeight: CGFloat
     
     init(
-        imageURL: URL,
-        authorName: String,
+        model: ImageModel,
         imageDataLoader: ImageDataLoader,
-        imageWidth: CGFloat = 0,
-        imageHeight: CGFloat = 0,
         state: State = .idle
     ) {
-        self.imageURL = imageURL
-        self.authorName = authorName
+        self.model = model
         self.state = state
-        self.imageWidth = imageWidth
-        self.imageHeight = imageHeight
         self.imageDataLoader = imageDataLoader
     }
 
@@ -52,17 +43,17 @@ final class ImageItemViewModel: ObservableObject {
         state = .loading
         do {
             let imageData = try await imageDataLoader.getImageData(
-                fromURL: imageURL.replaceWidthAndHeightPathComponents(with: maxWidth, height: cellHeight)
+                fromURL: model.url.replaceWidthAndHeightPathComponents(with: maxWidth, height: cellHeight)
             )
             if let uiImage = UIImage(data: imageData) {
-                state = .loaded(image: uiImage, author: authorName)
+                state = .loaded(image: uiImage, author: model.author)
             }
         } catch {}
     }
     
     func measureCellHeight(withMacWidth maxWidth: CGFloat) {
         guard !didMeasureSize else { return }
-        cellHeight = (imageHeight / imageWidth) * maxWidth
+        cellHeight = model.height.cgFloat / model.width.cgFloat * maxWidth
         didMeasureSize = true
     }
 }
@@ -74,6 +65,14 @@ private extension URL {
             .deletingLastPathComponent()
             .appending(path: "\(Int(ceil(width)))")
             .appending(path: "\(Int(ceil(height)))")
+    }
+    
+}
+
+private extension Int {
+    
+    var cgFloat: CGFloat {
+        .init(self)
     }
     
 }
