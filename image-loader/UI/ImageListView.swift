@@ -19,9 +19,9 @@ struct ImageListView: View {
                     ForEach(0..<3, id: \.self) { index in
                         GradientLoadingView()
                             .frame(height: 250)
-                            .padding(.horizontal, 10)
                     }
                 }
+                .padding(.horizontal, 10)
             case .loaded(let itemsViewModels):
                 ScrollView {
                     LazyVStack(spacing: 20) {
