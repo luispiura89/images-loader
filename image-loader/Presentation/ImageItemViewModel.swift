@@ -24,15 +24,18 @@ final class ImageItemViewModel: ObservableObject {
     
     private let model: ImageModel
     private let imageDataLoader: ImageDataLoader
+    private let onTap: () -> Void
     
     init(
         model: ImageModel,
         imageDataLoader: ImageDataLoader,
-        state: State = .idle
+        state: State = .idle,
+        onTap: @escaping () -> Void
     ) {
         self.model = model
         self.state = state
         self.imageDataLoader = imageDataLoader
+        self.onTap = onTap
     }
 
     @MainActor
@@ -55,6 +58,10 @@ final class ImageItemViewModel: ObservableObject {
         guard !didMeasureSize else { return }
         cellHeight = model.height.cgFloat / model.width.cgFloat * maxWidth
         didMeasureSize = true
+    }
+    
+    func onTapView() {
+        onTap()
     }
 }
 

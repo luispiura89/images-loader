@@ -24,20 +24,26 @@ struct image_loaderApp: App {
     }
     
     private func makeImageListView() -> some View {
+        let navigationPathHandler = NavigationViewPathHandler()
         let httpClient = URLSessionHTTPClient(session: .shared)
         let imageLoader = RemoteImageLoader(httpClient: httpClient, url: baseURL)
         let viewModel = ImageListViewModel(imageLoader: imageLoader)
         viewModel.onImagesLoaded = { images in
             viewModel.state = .loaded(
-                images.map {
+                images.map { model in
                     .init(
-                        model: $0,
-                        imageDataLoader: RemoteImageDataLoader(httpClient: httpClient)
+                        model: model,
+                        imageDataLoader: RemoteImageDataLoader(httpClient: httpClient),
+                        onTap: {
+                            navigationPathHandler.path.append(.detail(model: model))
+                        }
                     )
                 }
             )
         }
-        
-        return ImageListView(viewModel: viewModel)
+
+        return NavigationView(pathHandler: navigationPathHandler) {
+            ImageListView(viewModel: viewModel)
+        }
     }
 }

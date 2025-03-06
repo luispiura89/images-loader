@@ -41,6 +41,7 @@ struct ImageItemView: View {
                                 endPoint: .bottomTrailing
                             )
                         )
+                        .onTapGesture(perform: viewModel.onTapView)
                     
                     Text(author)
                         .font(.headline)
@@ -73,7 +74,7 @@ struct ImageItemView: View {
                         model: .init(id: "1", author: "First author", width: 1000, height: 200, url: URL(string: "https://any-url.com/image.jpg")!),
                         imageDataLoader: RemoteImageDataLoader(httpClient: URLSessionHTTPClient(session: .shared)),
                         state: .loading
-                    )
+                    ) {}
                 )
                 
                 ImageItemView(
@@ -81,7 +82,7 @@ struct ImageItemView: View {
                         model: .init(id: "2", author: "Second author", width: 3000, height: 5000, url: URL(string: "https://any-url.com/image.jpg")!),
                         imageDataLoader: RemoteImageDataLoader(httpClient: URLSessionHTTPClient(session: .shared)),
                         state: .loaded(image: UIImage(systemName: "square.and.arrow.down")!, author: "This is the author")
-                    )
+                    ) {}
                 )
             }
         }

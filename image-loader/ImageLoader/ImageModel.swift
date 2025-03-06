@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ImageModel {
+struct ImageModel: Hashable {
     let id: String
     let author: String
     let width: Int
