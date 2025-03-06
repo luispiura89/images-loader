@@ -14,7 +14,7 @@ struct ImageListView: View {
     var body: some View {
         ScrollView {
             switch viewModel.state {
-            case .loading:
+            case .loading, .idle:
                 VStack(spacing: 20) {
                     ForEach(0..<3, id: \.self) { index in
                         GradientLoadingView()
@@ -22,6 +22,9 @@ struct ImageListView: View {
                     }
                 }
                 .padding(.horizontal, 10)
+                .task {
+                    await viewModel.fetchImages()
+                }
             case .loaded(let itemsViewModels):
                 LazyVStack(spacing: 20) {
                     ForEach(0..<itemsViewModels.count, id: \.self) { index in
@@ -33,8 +36,5 @@ struct ImageListView: View {
             }
         }
         .scrollIndicators(.hidden)
-        .task {
-            await viewModel.fetchImages()
-        }
     }
 }
