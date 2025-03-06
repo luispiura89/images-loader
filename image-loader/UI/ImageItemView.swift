@@ -21,41 +21,39 @@ struct ImageItemView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            ZStack {
+            ZStack(alignment: .bottomTrailing) {
                 switch viewModel.state {
-                case .loading:
+                case .loading, .idle:
                     GradientLoadingView()
+                        .task {
+                            await viewModel.fetchImage(maxWidth: maxCellWidth(in: geometry))
+                        }
                 case let .loaded(image, author):
-                    ZStack(alignment: .bottomTrailing) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .background(
-                                LinearGradient(
-                                    gradient: Gradient(
-                                        colors: [.clear, .black.opacity(Constants.gradientOpacity)]
-                                    ),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .background(
+                            LinearGradient(
+                                gradient: Gradient(
+                                    colors: [.clear, .black.opacity(Constants.gradientOpacity)]
+                                ),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
                             )
-                        
-                        Text(author)
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding(Constants.authorPad)
-                    }
-                    .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
+                        )
+                    
+                    Text(author)
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding(Constants.authorPad)
                 default:
                     EmptyView()
                 }
             }
+            .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
+            .padding(.horizontal, Constants.horizontalPad)
             .onAppear {
                 viewModel.measureCellHeight(withMacWidth: maxCellWidth(in: geometry))
-            }
-            .padding(.horizontal, Constants.horizontalPad)
-            .task {
-                await viewModel.fetchImage(maxWidth: maxCellWidth(in: geometry))
             }
         }
         .frame(height: viewModel.cellHeight)
