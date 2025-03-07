@@ -18,7 +18,14 @@ struct NavigationView<V: View>: View {
             rootView()
                 .navigationDestination(for: NavigationViewPath.self) { path in
                     if case .detail(let model) = path {
-                        Text("This will be the detail view \(model.author)")
+                        DetailView(
+                            viewModel: .init(
+                                model: model,
+                                imageDataLoader: RemoteImageDataLoader(
+                                    httpClient: URLSessionHTTPClient(session: .shared)
+                                )
+                            )
+                        )
                     }
                 }
         }

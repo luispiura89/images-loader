@@ -61,7 +61,9 @@ final class ImageItemViewModel: ObservableObject {
     }
     
     func onTapView() {
-        onTap()
+        if case .loaded = state {
+            onTap()
+        }
     }
 }
 
@@ -76,7 +78,7 @@ private extension URL {
     
 }
 
-private extension Int {
+extension Int {
     
     var cgFloat: CGFloat {
         .init(self)
