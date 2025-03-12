@@ -47,8 +47,10 @@ struct ImageItemView: View {
                         .font(.headline)
                         .foregroundColor(.white)
                         .padding(Constants.authorPad)
-                default:
-                    EmptyView()
+                case .failure:
+                    RetryImageLoadView(onTap: {
+                        viewModel.retryImageLoad(maxWidth: maxCellWidth(in: geometry))
+                    })
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))

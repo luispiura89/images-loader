@@ -14,7 +14,7 @@ final class ImageItemViewModel: ObservableObject {
         case idle
         case loading
         case loaded(image: UIImage, author: String)
-        case error(Error)
+        case failure(Error)
     }
     
     @Published var state: State = .idle
@@ -45,13 +45,27 @@ final class ImageItemViewModel: ObservableObject {
         }
         state = .loading
         do {
+            if Task.isCancelled {
+                return
+            }
             let imageData = try await imageDataLoader.getImageData(
                 fromURL: model.url.replaceWidthAndHeightPathComponents(with: maxWidth, height: cellHeight)
             )
             if let uiImage = UIImage(data: imageData) {
                 state = .loaded(image: uiImage, author: model.author)
             }
-        } catch {}
+        } catch {
+            if Task.isCancelled {
+                return
+            }
+            state = .failure(error)
+        }
+    }
+    
+    func retryImageLoad(maxWidth: CGFloat) {
+        Task { @MainActor in
+            await fetchImage(maxWidth: maxWidth)
+        }
     }
     
     func measureCellHeight(withMacWidth maxWidth: CGFloat) {
