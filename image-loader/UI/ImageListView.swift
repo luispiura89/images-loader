@@ -31,8 +31,8 @@ struct ImageListView: View {
                         ImageItemView(viewModel: itemsViewModels[index])
                     }
                 }
-            default:
-                EmptyView()
+            case .failure:
+                RetryLoadItemsView(onTap: viewModel.retryLoading)
             }
         }
         .scrollIndicators(.hidden)

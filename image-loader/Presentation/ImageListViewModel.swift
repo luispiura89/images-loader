@@ -14,7 +14,7 @@ final class ImageListViewModel: ObservableObject {
         case idle
         case loading
         case loaded([ImageItemViewModel])
-        case error(Error)
+        case failure(Error)
     }
     
     @Published var state = State.idle
@@ -38,6 +38,15 @@ final class ImageListViewModel: ObservableObject {
         do {
             let images = try await imageLoader.getImages()
             onImagesLoaded?(images)
-        } catch {}
+        } catch {
+            state = .failure(error)
+        }
+    }
+    
+    func retryLoading() {
+        Task { @MainActor in
+            state = .idle
+            await fetchImages()
+        }
     }
 }
