@@ -17,14 +17,14 @@ struct DetailView: View {
                 switch viewModel.state {
                 case .idle, .loading:
                     GradientLoadingView()
-                        .frame(width: geometry.size.width, height: viewModel.cellHeight)
+                        .frame(width: geometry.size.width)
                 case .loaded(let image):
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: geometry.size.width, height: viewModel.cellHeight)
+                        .frame(width: geometry.size.width)
                 case .failed:
-                    Text("Error loading image")
+                    RetryImageLoadView(onTap: viewModel.retryImageLoad)
                 }
             }
             .frame(height: geometry.size.height)
@@ -32,6 +32,7 @@ struct DetailView: View {
                 viewModel.measureImageHeight(forScreenWidth: geometry.size.width)
             }
         }
+        .frame(height: viewModel.cellHeight)
         .task {
             await viewModel.loadImage()
         }

@@ -31,13 +31,22 @@ final class DetailViewModel: ObservableObject {
     func loadImage() async {
         state = .loading
         do {
+            if Task.isCancelled {
+                return
+            }
             let imageData = try await imageDataLoader.getImageData(fromURL: model.url)
             guard let image = UIImage(data: imageData) else {
                 return
             }
             state = .loaded(image)
         } catch {
-            
+            state = .failed(error)
+        }
+    }
+    
+    func retryImageLoad() {
+        Task { @MainActor in
+            await loadImage()
         }
     }
     
