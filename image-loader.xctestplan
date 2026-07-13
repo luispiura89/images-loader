@@ -1,0 +1,39 @@
+{
+  "configurations" : [
+    {
+      "id" : "B5CAF26B-90DE-49BE-8E56-616E7F0F6E8B",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:image-loader.xcodeproj",
+      "identifier" : "A02245032D711E1A0076F721",
+      "name" : "image-loader"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:image-loader.xcodeproj",
+        "identifier" : "A02245132D711E1C0076F721",
+        "name" : "image-loaderTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:image-loader.xcodeproj",
+        "identifier" : "A022451D2D711E1C0076F721",
+        "name" : "image-loaderUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
