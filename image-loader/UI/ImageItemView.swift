@@ -5,6 +5,7 @@
 //  Created by Luis Francisco Piura Mejia on 27/2/25.
 //
 
+import Kingfisher
 import SwiftUI
 
 struct ImageItemView: View {
@@ -22,36 +23,23 @@ struct ImageItemView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .bottomTrailing) {
-                switch viewModel.state {
-                case .loading, .idle:
-                    GradientLoadingView()
-                        .task {
-                            await viewModel.fetchImage(maxWidth: maxCellWidth(in: geometry))
-                        }
-                case let .loaded(image, author):
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .background(
-                            LinearGradient(
-                                gradient: Gradient(
-                                    colors: [.clear, .black.opacity(Constants.gradientOpacity)]
-                                ),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                KFImage(viewModel.url(maxWidth: maxCellWidth(in: geometry)))
+                    .placeholder {
+                        GradientLoadingView()
+                            .frame(width: maxCellWidth(in: geometry), height: geometry.size.height)
+                    }
+                    .resizable()
+                    .scaledToFit()
+                    .background(
+                        LinearGradient(
+                            gradient: Gradient(
+                                colors: [.clear, .black.opacity(Constants.gradientOpacity)]
+                            ),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
                         )
-                        .onTapGesture(perform: viewModel.onTapView)
-                    
-                    Text(author)
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding(Constants.authorPad)
-                case .failure:
-                    RetryImageLoadView(onTap: {
-                        viewModel.retryImageLoad(maxWidth: maxCellWidth(in: geometry))
-                    })
-                }
+                    )
+                    .onTapGesture(perform: viewModel.onTapView)
             }
             .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
             .padding(.horizontal, Constants.horizontalPad)
@@ -73,17 +61,13 @@ struct ImageItemView: View {
             VStack(spacing: 20) {
                 ImageItemView(
                     viewModel: .init(
-                        model: .init(id: "1", author: "First author", width: 1000, height: 200, url: URL(string: "https://any-url.com/image.jpg")!),
-                        imageDataLoader: RemoteImageDataLoader(httpClient: URLSessionHTTPClient(session: .shared)),
-                        state: .loading
+                        model: .init(id: "1", author: "First author", width: 1000, height: 200, url: URL(string: "https://any-url.com/image.jpg")!)
                     ) {}
                 )
                 
                 ImageItemView(
                     viewModel: .init(
-                        model: .init(id: "2", author: "Second author", width: 3000, height: 5000, url: URL(string: "https://any-url.com/image.jpg")!),
-                        imageDataLoader: RemoteImageDataLoader(httpClient: URLSessionHTTPClient(session: .shared)),
-                        state: .loaded(image: UIImage(systemName: "square.and.arrow.down")!, author: "This is the author")
+                        model: .init(id: "2", author: "Second author", width: 3000, height: 5000, url: URL(string: "https://any-url.com/image.jpg")!)
                     ) {}
                 )
             }
