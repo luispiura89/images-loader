@@ -20,10 +20,7 @@ struct NavigationView<V: View>: View {
                     if case .detail(let model) = path {
                         DetailView(
                             viewModel: .init(
-                                model: model,
-                                imageDataLoader: RemoteImageDataLoader(
-                                    httpClient: URLSessionHTTPClient(session: .shared)
-                                )
+                                model: model
                             )
                         )
                     }

@@ -5,36 +5,28 @@
 //  Created by Luis Francisco Piura Mejia on 7/3/25.
 //
 
+import Kingfisher
 import SwiftUI
 
 struct DetailView: View {
     
     @StateObject var viewModel: DetailViewModel
+    @State var loading: Bool = true
     
     var body: some View {
         GeometryReader { geometry in
-            HStack(alignment: .center) {
-                switch viewModel.state {
-                case .idle, .loading:
-                    GradientLoadingView()
-                        .frame(width: geometry.size.width)
-                case .loaded(let image):
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: geometry.size.width)
-                case .failed:
-                    RetryImageLoadView(onTap: viewModel.retryImageLoad)
+            KFImage(viewModel.url)
+                .onSuccess { _ in
+                    loading = false
                 }
-            }
-            .frame(height: geometry.size.height)
-            .onAppear {
-                viewModel.measureImageHeight(forScreenWidth: geometry.size.width)
-            }
+                .resizable()
+                .scaledToFit()
+                .frame(width: geometry.size.width)
+                .onAppear {
+                    viewModel.measureImageHeight(forScreenWidth: geometry.size.width)
+                }
         }
+        .background(loading ? GradientLoadingView() : nil)
         .frame(height: viewModel.cellHeight)
-        .task {
-            await viewModel.loadImage()
-        }
     }
 }

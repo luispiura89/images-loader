@@ -33,7 +33,6 @@ struct image_loaderApp: App {
                 images.map { model in
                     .init(
                         model: model,
-                        imageDataLoader: RemoteImageDataLoader(httpClient: httpClient),
                         onTap: {
                             navigationPathHandler.path.append(.detail(model: model))
                         }

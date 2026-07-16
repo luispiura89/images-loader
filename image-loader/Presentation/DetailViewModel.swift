@@ -10,44 +10,13 @@ import SwiftUI
 final class DetailViewModel: ObservableObject {
 
     private let model: ImageModel
-    private let imageDataLoader: ImageDataLoader
     
-    enum State {
-        case idle
-        case loading
-        case loaded(UIImage)
-        case failed(Error)
-    }
-    
-    @Published private(set) var state: State = .idle
     @Published private(set) var cellHeight: CGFloat = 200
+    @Published private(set) var url: URL?
     
-    init(model: ImageModel, imageDataLoader: ImageDataLoader) {
+    init(model: ImageModel) {
         self.model = model
-        self.imageDataLoader = imageDataLoader
-    }
-    
-    @MainActor
-    func loadImage() async {
-        state = .loading
-        do {
-            if Task.isCancelled {
-                return
-            }
-            let imageData = try await imageDataLoader.getImageData(fromURL: model.url)
-            guard let image = UIImage(data: imageData) else {
-                return
-            }
-            state = .loaded(image)
-        } catch {
-            state = .failed(error)
-        }
-    }
-    
-    func retryImageLoad() {
-        Task { @MainActor in
-            await loadImage()
-        }
+        self.url = model.url
     }
     
     func measureImageHeight(forScreenWidth screenWidth: CGFloat) {

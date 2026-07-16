@@ -5,67 +5,30 @@
 //  Created by Luis Francisco Piura Mejia on 27/2/25.
 //
 
+import Foundation
 import SwiftUI
-import UIKit
 
 final class ImageItemViewModel: ObservableObject {
     
-    enum State {
-        case idle
-        case loading
-        case loaded(image: UIImage, author: String)
-        case failure(Error)
-    }
-    
-    @Published var state: State = .idle
-    @Published var cellHeight: CGFloat = 200
-    
+    private let model: ImageModel
+    private let onTap: () -> Void
     private var didMeasureSize = false
     
-    private let model: ImageModel
-    private let imageDataLoader: ImageDataLoader
-    private let onTap: () -> Void
+    @Published var cellHeight: CGFloat = 200
+
+    let author: String
     
     init(
         model: ImageModel,
-        imageDataLoader: ImageDataLoader,
-        state: State = .idle,
         onTap: @escaping () -> Void
     ) {
         self.model = model
-        self.state = state
-        self.imageDataLoader = imageDataLoader
         self.onTap = onTap
-    }
-
-    @MainActor
-    func fetchImage(maxWidth: CGFloat) async {
-        if case .loaded = state {
-            return
-        }
-        state = .loading
-        do {
-            if Task.isCancelled {
-                return
-            }
-            let imageData = try await imageDataLoader.getImageData(
-                fromURL: model.url.replaceWidthAndHeightPathComponents(with: maxWidth, height: cellHeight)
-            )
-            if let uiImage = UIImage(data: imageData) {
-                state = .loaded(image: uiImage, author: model.author)
-            }
-        } catch {
-            if Task.isCancelled {
-                return
-            }
-            state = .failure(error)
-        }
+        author = model.author
     }
     
-    func retryImageLoad(maxWidth: CGFloat) {
-        Task { @MainActor in
-            await fetchImage(maxWidth: maxWidth)
-        }
+    func url(maxWidth: CGFloat) -> URL {
+        model.url.replaceWidthAndHeightPathComponents(with: maxWidth, height: cellHeight)
     }
     
     func measureCellHeight(withMacWidth maxWidth: CGFloat) {
@@ -75,9 +38,7 @@ final class ImageItemViewModel: ObservableObject {
     }
     
     func onTapView() {
-        if case .loaded = state {
-            onTap()
-        }
+        onTap()
     }
 }
 
