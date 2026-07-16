@@ -18,6 +18,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+    
+    - name: Resolve Packages
+      run: |
+        time xcodebuild \
+        -resolvePackageDependencies \
+        -project image-loader.xcodeproj
 
     - name: Run Unit Tests
       run: |
@@ -32,7 +38,7 @@ jobs:
         echo "===== DEVICES ====="
         xcrun simctl list devices available
 
-        xcodebuild test \
+        time xcodebuild test \
           -project image-loader.xcodeproj \
           -scheme image-loader \
           -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest' \
