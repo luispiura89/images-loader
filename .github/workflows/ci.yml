@@ -33,4 +33,13 @@ jobs:
           -scheme image-loader \
           -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest' \
           CODE_SIGNING_ALLOWED=NO \
+          -resultBundlePath TestResults.xcresult \
           -quiet
+
+    - name: Upload Tests Results
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: TestResults.xcresult
+        path: TestResults.xcresult
+        retention-days: 2
