@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A05AA83A2D71222A004B96A2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A05AA8392D71222A004B96A2 /* README.md */; };
+		A0F9B1E5300978870021BFFF /* MyImagesLoaderDependencies in Frameworks */ = {isa = PBXBuildFile; productRef = A0F9B1E4300978870021BFFF /* MyImagesLoaderDependencies */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,7 +33,8 @@
 		A02245142D711E1C0076F721 /* image-loaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "image-loaderTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A022451E2D711E1C0076F721 /* image-loaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "image-loaderUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A05AA8392D71222A004B96A2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		A092A8473005A9A1000C9BC2 /* image-loader.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = "image-loader.xctestplan"; sourceTree = "<group>"; };
+		A092A8473005A9A1000C9BC2 /* image-loader.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "image-loader.xctestplan"; sourceTree = "<group>"; };
+		A0F9B1E2300978560021BFFF /* MyImagesLoaderDependencies */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MyImagesLoaderDependencies; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -58,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0F9B1E5300978870021BFFF /* MyImagesLoaderDependencies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,11 +84,13 @@
 		A02244FB2D711E1A0076F721 = {
 			isa = PBXGroup;
 			children = (
+				A0F9B1E2300978560021BFFF /* MyImagesLoaderDependencies */,
 				A092A8473005A9A1000C9BC2 /* image-loader.xctestplan */,
 				A05AA8392D71222A004B96A2 /* README.md */,
 				A02245062D711E1A0076F721 /* image-loader */,
 				A02245172D711E1C0076F721 /* image-loaderTests */,
 				A02245212D711E1C0076F721 /* image-loaderUITests */,
+				A0F9B1E3300978870021BFFF /* Frameworks */,
 				A02245052D711E1A0076F721 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -98,6 +103,13 @@
 				A022451E2D711E1C0076F721 /* image-loaderUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A0F9B1E3300978870021BFFF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -120,6 +132,7 @@
 			);
 			name = "image-loader";
 			packageProductDependencies = (
+				A0F9B1E4300978870021BFFF /* MyImagesLoaderDependencies */,
 			);
 			productName = "image-loader";
 			productReference = A02245042D711E1A0076F721 /* image-loader.app */;
@@ -561,6 +574,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A0F9B1E4300978870021BFFF /* MyImagesLoaderDependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MyImagesLoaderDependencies;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A02244FC2D711E1A0076F721 /* Project object */;
 }
