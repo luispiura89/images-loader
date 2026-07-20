@@ -23,12 +23,17 @@ jobs:
       id: spm-cache
       uses: actions/cache@v6
       with:
-        path: ~/Library/Caches/org.swift.swiftpm
+        path: |
+          .build
+          ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+          ~/Library/Caches/org.swift.swiftpm
+          ~/Library/org.swift.swiftpm
         key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
         restore-keys: |
           ${{ runner.os }}-spm-
     
     - name: Cache Xcode derived data
+      id: derived-cache
       uses: actions/cache@v6
       with:
         path: ~/Library/Developer/Xcode/DerivedData
@@ -39,6 +44,7 @@ jobs:
     - name: Cache Status
       run: |
         echo "SPM cache hit: ${{ steps.spm-cache.outputs.cache-hit }}"
+        echo "Derived Data cache hit: ${{ steps.derived-cache.outputs.cache-hit }}"
 
     - name: Run Unit Tests
       run: |
