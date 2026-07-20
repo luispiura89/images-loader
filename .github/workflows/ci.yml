@@ -21,7 +21,7 @@ jobs:
 
     - name: Cache Swift Package Manager
       id: spm-cache
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/Library/Caches/org.swift.swiftpm
         key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
@@ -29,7 +29,7 @@ jobs:
           ${{ runner.os }}-spm-
     
     - name: Cache Xcode derived data
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/Library/Developer/Xcode/DerivedData
         key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles('**/*.xcodeproj/project.pbxproj', '**/*.xcworkspace/contents.xcworkspacedata') }}
