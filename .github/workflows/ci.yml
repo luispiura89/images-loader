@@ -19,11 +19,39 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
+    - name: Cache Swift Package Manager
+      id: spm-cache
+      uses: actions/cache@v6
+      with:
+        path: |
+          .build
+          ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+          ~/Library/Caches/org.swift.swiftpm
+          ~/Library/org.swift.swiftpm
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+    
+    - name: Cache Xcode derived data
+      id: derived-cache
+      uses: actions/cache@v6
+      with:
+        path: ~/Library/Developer/Xcode/DerivedData
+        key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles('**/*.xcodeproj/project.pbxproj', '**/*.xcworkspace/contents.xcworkspacedata') }}
+        restore-keys: |
+          ${{ runner.os }}-xcode-deriveddata-
+
+    - name: Cache Status
+      run: |
+        echo "SPM cache hit: ${{ steps.spm-cache.outputs.cache-hit }}"
+        echo "Derived Data cache hit: ${{ steps.derived-cache.outputs.cache-hit }}"
+
     - name: Run Unit Tests
       run: |
         set -eo pipefail
         
         xcode-select -p
+        echo "===== VERSIONS ====="
         xcodebuild -version
         xcodebuild -showsdks
         
@@ -32,7 +60,7 @@ jobs:
         echo "===== DEVICES ====="
         xcrun simctl list devices available
 
-        xcodebuild test \
+        time xcodebuild test \
           -project image-loader.xcodeproj \
           -scheme image-loader \
           -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest' \
