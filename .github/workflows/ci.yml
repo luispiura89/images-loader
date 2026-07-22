@@ -60,11 +60,17 @@ jobs:
         echo "===== DEVICES ====="
         xcrun simctl list devices available
 
-        time xcodebuild test \
+        time xcodebuild build-for-testing \
           -project image-loader.xcodeproj \
           -scheme image-loader \
           -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest' \
           CODE_SIGNING_ALLOWED=NO \
+          -quiet
+
+        time xcodebuild test-without-building \
+          -project image-loader.xcodeproj \
+          -scheme image-loader \
+          -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest' \
           -resultBundlePath TestResults.xcresult \
           -quiet
 
