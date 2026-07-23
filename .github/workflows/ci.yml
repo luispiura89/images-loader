@@ -53,7 +53,7 @@ jobs:
         echo "Derived Data cache hit: ${{ steps.derived-cache.outputs.cache-hit }}"
 
     - name: Run Unit Tests
-      run: bundle exec fastlane test
+      run: bundle exec fastlane ci_test
 
     - name: Upload Tests Results
       if: always()

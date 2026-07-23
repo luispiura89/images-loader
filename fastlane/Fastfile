@@ -16,8 +16,8 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Run Unit Tests"
-  lane :test do
+  desc "Build For Testing"
+  lane :build_for_testing do
 	# build only
      scan(
     	project: "image-loader.xcodeproj",
@@ -27,7 +27,10 @@ platform :ios do
     	derived_data_path: "~/Library/Developer/Xcode/DerivedData",
 		build_for_testing: true
      )
+  end
 
+  desc "Run Unit Tests"
+  lane :test_without_building do
 	 # test without building
      scan(
     	project: "image-loader.xcodeproj",
@@ -40,5 +43,11 @@ platform :ios do
     	derived_data_path: "~/Library/Developer/Xcode/DerivedData",
 		test_without_building: true
      )
+  end
+
+  desc "CI Test Pipeline"
+  lane :ci_test do
+	build_for_testing
+	test_without_building
   end
 end
