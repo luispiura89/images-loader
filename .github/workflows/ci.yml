@@ -19,6 +19,12 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
+    - name: Set up Ruby with caching
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.3.6
+        bundler-cache: true
+
     - name: Cache Swift Package Manager
       id: spm-cache
       uses: actions/cache@v6
@@ -47,37 +53,14 @@ jobs:
         echo "Derived Data cache hit: ${{ steps.derived-cache.outputs.cache-hit }}"
 
     - name: Run Unit Tests
-      run: |
-        set -eo pipefail
-        
-        xcode-select -p
-        echo "===== VERSIONS ====="
-        xcodebuild -version
-        xcodebuild -showsdks
-        
-        echo "===== RUNTIMES ====="
-        xcrun simctl list runtimes
-        echo "===== DEVICES ====="
-        xcrun simctl list devices available
-
-        time xcodebuild build-for-testing \
-          -project image-loader.xcodeproj \
-          -scheme image-loader \
-          -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest' \
-          CODE_SIGNING_ALLOWED=NO \
-          -quiet
-
-        time xcodebuild test-without-building \
-          -project image-loader.xcodeproj \
-          -scheme image-loader \
-          -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest' \
-          -resultBundlePath TestResults.xcresult \
-          -quiet
+      run: bundle exec fastlane test
 
     - name: Upload Tests Results
       if: always()
       uses: actions/upload-artifact@v7
       with:
-        name: TestResults.xcresult
-        path: TestResults.xcresult
+        name: TestResults
+        path: |
+            fastlane/test_output/report.junit
+            fastlane/test_output/image-loader.xcresult
         retention-days: 2
