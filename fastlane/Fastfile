@@ -25,7 +25,8 @@ platform :ios do
     	xcargs: "CODE_SIGNING_ALLOWED=NO",
     	output_types: "junit",
     	output_directory: "fastlane/test_output",
-    	result_bundle: true
+    	result_bundle: true,
+    	derived_data_path: "~/Library/Developer/Xcode/DerivedData"
      )
   end
 end
