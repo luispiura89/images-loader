@@ -18,6 +18,17 @@ default_platform(:ios)
 platform :ios do
   desc "Run Unit Tests"
   lane :test do
+	# build only
+     scan(
+    	project: "image-loader.xcodeproj",
+    	scheme: "image-loader",
+    	device: "iPhone 17 Pro",
+    	xcargs: "CODE_SIGNING_ALLOWED=NO",
+    	derived_data_path: "~/Library/Developer/Xcode/DerivedData",
+		build_for_testing: true
+     )
+
+	 # test without building
      scan(
     	project: "image-loader.xcodeproj",
     	scheme: "image-loader",
@@ -26,7 +37,8 @@ platform :ios do
     	output_types: "junit",
     	output_directory: "fastlane/test_output",
     	result_bundle: true,
-    	derived_data_path: "~/Library/Developer/Xcode/DerivedData"
+    	derived_data_path: "~/Library/Developer/Xcode/DerivedData",
+		test_without_building: true
      )
   end
 end
