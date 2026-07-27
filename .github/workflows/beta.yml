@@ -10,7 +10,7 @@ concurrency:
 jobs:
   beta:
     runs-on: macos-26
-    timeout-minutes: 10
+    timeout-minutes: 45
 
     steps:
     - uses: actions/checkout@v6
