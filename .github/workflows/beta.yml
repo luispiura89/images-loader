@@ -58,6 +58,7 @@ jobs:
     - name: Upload TestFlight
       run: bundle exec fastlane beta
       env:
+        MATCH_REPOSITORY: ${{ secrets.MATCH_REPOSITORY }}
         APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
         APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
