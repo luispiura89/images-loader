@@ -1,0 +1,65 @@
+name: BETA
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: beta
+  cancel-in-progress: false
+
+jobs:
+  beta:
+    runs-on: macos-26
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Set up Ruby with caching
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.3.6
+        bundler-cache: true
+
+    - name: Cache Swift Package Manager
+      id: spm-cache
+      uses: actions/cache@v6
+      with:
+        path: |
+          .build
+          ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+          ~/Library/Caches/org.swift.swiftpm
+          ~/Library/org.swift.swiftpm
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+    
+    - name: Cache Xcode derived data
+      id: derived-cache
+      uses: actions/cache@v6
+      with:
+        path: ~/Library/Developer/Xcode/DerivedData
+        key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles('**/*.xcodeproj/project.pbxproj', '**/*.xcworkspace/contents.xcworkspacedata') }}
+        restore-keys: |
+          ${{ runner.os }}-xcode-deriveddata-
+
+    - name: Cache Status
+      run: |
+        echo "SPM cache hit: ${{ steps.spm-cache.outputs.cache-hit }}"
+        echo "Derived Data cache hit: ${{ steps.derived-cache.outputs.cache-hit }}"
+
+    - name: Set up SSH key for Match
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.MATCH_GIT_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+    - name: Upload TestFlight
+      run: bundle exec fastlane beta
+      env:
+        APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
+        APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+        APP_STORE_CONNECT_API_KEY_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_PRIVATE_KEY }}
