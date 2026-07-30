@@ -10,10 +10,15 @@ concurrency:
 jobs:
   beta:
     runs-on: macos-26
-    timeout-minutes: 10
+    timeout-minutes: 45
 
     steps:
     - uses: actions/checkout@v6
+    
+    - name: Verify Xcode
+      run: |
+        xcodebuild -version
+        xcode-select -p
 
     - name: Set up Ruby with caching
       uses: ruby/setup-ruby@v1
@@ -56,8 +61,9 @@ jobs:
         ssh-keyscan github.com >> ~/.ssh/known_hosts
 
     - name: Upload TestFlight
-      run: bundle exec fastlane beta
+      run: bundle exec fastlane beta --verbose
       env:
+        MATCH_REPOSITORY: ${{ secrets.MATCH_REPOSITORY }}
         APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
         APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
